@@ -18,16 +18,16 @@ public interface WarehouseSlotRepository extends JpaRepository<WarehouseSlot, Lo
     @Query("SELECT s FROM WarehouseSlot s WHERE s.id = :id")
     Optional<WarehouseSlot> findByIdWithLock(@Param("id") Long id);
     
-    @Query("SELECT s FROM WarehouseSlot s WHERE s.status = 'ACTIVE' AND s.occupiedCount < s.capacity")
+    @Query("SELECT s FROM WarehouseSlot s WHERE s.status != 'DISABLED' AND s.occupiedCount < s.capacity")
     List<WarehouseSlot> findAvailableSlots();
     
-    @Query("SELECT s FROM WarehouseSlot s WHERE s.status = 'ACTIVE' AND s.occupiedCount < s.capacity ORDER BY s.id")
+    @Query("SELECT s FROM WarehouseSlot s WHERE s.status != 'DISABLED' AND s.occupiedCount < s.capacity ORDER BY s.id")
     List<WarehouseSlot> findAvailableSlotsOrdered();
     
     @Query(value = "SELECT s.* FROM warehouse_slots s " +
                    "JOIN warehouse_racks r ON s.rack_id = r.id " +
                    "JOIN warehouse_zones z ON r.zone_id = z.id " +
-                   "WHERE s.status = 'ACTIVE' AND s.occupied_count < s.capacity " +
+                   "WHERE s.status != 'DISABLED' AND s.occupied_count < s.capacity " +
                    "AND z.id = :zoneId " +
                    "ORDER BY s.id", nativeQuery = true)
     List<WarehouseSlot> findAvailableSlotsByZoneId(@Param("zoneId") Long zoneId);

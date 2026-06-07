@@ -115,6 +115,18 @@ INSERT IGNORE INTO warehouse_slots (id, rack_id, code, row_num, col_num, capacit
   (73, 6, 'B-F-05-03', 5, 3, 5, 0, 'ARMORED', '', 'ACTIVE', 0);
 
 -- 5. 库区类别约束
+-- 普通物证区拒绝存放特殊类别（只能放普通类别）
+INSERT IGNORE INTO zone_category_restrictions (id, zone_id, category, restriction_type) VALUES
+  (13, 1, 'BIOLOGICAL', 'DENY'),
+  (14, 1, 'ELECTRONIC', 'DENY'),
+  (15, 1, 'DANGEROUS', 'DENY'),
+  (16, 1, 'EXPLOSIVE', 'DENY'),
+  (17, 1, 'FLAMMABLE', 'DENY'),
+  (18, 1, 'TOXIC', 'DENY'),
+  (19, 1, 'FIREARM', 'DENY'),
+  (20, 1, 'AMMO', 'DENY'),
+  (21, 1, 'OXIDIZER', 'DENY');
+
 -- 生物检材区只允许放BIOLOGICAL
 INSERT IGNORE INTO zone_category_restrictions (id, zone_id, category, restriction_type) VALUES
   (1, 2, 'BIOLOGICAL', 'ALLOW');

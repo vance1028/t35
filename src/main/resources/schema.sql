@@ -101,20 +101,6 @@ CREATE TABLE IF NOT EXISTS category_isolation_rules (
     UNIQUE KEY uk_isolation_categories (category_a, category_b, rule_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='类别隔离规则表';
 
-CREATE TABLE IF NOT EXISTS slot_evidence_placement (
-    id              BIGINT       NOT NULL AUTO_INCREMENT,
-    slot_id         BIGINT       NOT NULL COMMENT '库位ID',
-    evidence_id     BIGINT       NOT NULL COMMENT '物证ID',
-    placed_at       DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '上架时间',
-    placed_by       BIGINT       NULL COMMENT '上架人',
-    remark          VARCHAR(500) NOT NULL DEFAULT '' COMMENT '备注',
-    PRIMARY KEY (id),
-    UNIQUE KEY uk_placement_evidence (evidence_id),
-    KEY idx_placement_slot (slot_id),
-    CONSTRAINT fk_placement_slot FOREIGN KEY (slot_id) REFERENCES warehouse_slots (id),
-    CONSTRAINT fk_placement_evidence FOREIGN KEY (evidence_id) REFERENCES evidence (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='库位物证占用记录表';
-
 -- ==================== 原有表结构 ====================
 
 CREATE TABLE IF NOT EXISTS officers (
@@ -150,6 +136,20 @@ CREATE TABLE IF NOT EXISTS evidence (
     CONSTRAINT fk_evidence_officer FOREIGN KEY (registered_by) REFERENCES officers (id),
     CONSTRAINT fk_evidence_slot FOREIGN KEY (slot_id) REFERENCES warehouse_slots (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='物证表';
+
+CREATE TABLE IF NOT EXISTS slot_evidence_placement (
+    id              BIGINT       NOT NULL AUTO_INCREMENT,
+    slot_id         BIGINT       NOT NULL COMMENT '库位ID',
+    evidence_id     BIGINT       NOT NULL COMMENT '物证ID',
+    placed_at       DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '上架时间',
+    placed_by       BIGINT       NULL COMMENT '上架人',
+    remark          VARCHAR(500) NOT NULL DEFAULT '' COMMENT '备注',
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_placement_evidence (evidence_id),
+    KEY idx_placement_slot (slot_id),
+    CONSTRAINT fk_placement_slot FOREIGN KEY (slot_id) REFERENCES warehouse_slots (id),
+    CONSTRAINT fk_placement_evidence FOREIGN KEY (evidence_id) REFERENCES evidence (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='库位物证占用记录表';
 
 CREATE TABLE IF NOT EXISTS custody_records (
     id           BIGINT       NOT NULL AUTO_INCREMENT,

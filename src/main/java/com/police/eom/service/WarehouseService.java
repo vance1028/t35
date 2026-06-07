@@ -9,6 +9,7 @@ import com.police.eom.web.dto.StorageCapacityDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -164,11 +165,10 @@ public class WarehouseService {
         }
         slotRepo.save(toSlot);
 
-        placementRepo.deleteByEvidenceId(evidenceId);
-
-        SlotEvidencePlacement placement = new SlotEvidencePlacement();
+        SlotEvidencePlacement placement = placementRepo.findByEvidenceId(evidenceId)
+                .orElseThrow(() -> ApiException.notFound("物证上架记录不存在"));
         placement.setSlotId(toSlotId);
-        placement.setEvidenceId(evidenceId);
+        placement.setPlacedAt(LocalDateTime.now());
         placement.setPlacedBy(movedBy);
         placement.setRemark(remark != null ? remark : "移库");
         placementRepo.save(placement);
@@ -208,8 +208,11 @@ public class WarehouseService {
         WarehouseRack rack = getRack(slot.getRackId());
         WarehouseZone zone = getZone(rack.getZoneId());
 
-        if (!"ACTIVE".equals(slot.getStatus())) {
+        if ("DISABLED".equals(slot.getStatus())) {
             throw ApiException.conflict("库位未启用");
+        }
+        if ("FULL".equals(slot.getStatus()) || slot.getOccupiedCount() >= slot.getCapacity()) {
+            throw ApiException.conflict("库位容量已满");
         }
 
         validateZoneCategoryRestriction(zone.getId(), evidence.getCategory());
