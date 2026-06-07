@@ -11,4 +11,6 @@ public interface EvidenceRepository extends JpaRepository<Evidence, Long> {
     Optional<Evidence> findByEvidenceNo(String evidenceNo);
     List<Evidence> findByCaseNo(String caseNo);
     List<Evidence> findByStatus(String status);
+    List<Evidence> findBySlotId(Long slotId);
+    List<Evidence> findByCaseNoAndSlotIdIsNotNull(String caseNo);
 }

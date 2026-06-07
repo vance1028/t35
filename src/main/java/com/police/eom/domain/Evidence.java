@@ -36,6 +36,9 @@ public class Evidence {
     @Column(nullable = false, length = 128)
     private String location = "";
 
+    @Column(name = "slot_id")
+    private Long slotId;
+
     @Column(name = "registered_by")
     private Long registeredBy;
 
@@ -73,6 +76,8 @@ public class Evidence {
     public void setStatus(String status) { this.status = status; }
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+    public Long getSlotId() { return slotId; }
+    public void setSlotId(Long slotId) { this.slotId = slotId; }
     public Long getRegisteredBy() { return registeredBy; }
     public void setRegisteredBy(Long registeredBy) { this.registeredBy = registeredBy; }
     public LocalDateTime getCreatedAt() { return createdAt; }
